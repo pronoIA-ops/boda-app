@@ -171,6 +171,13 @@
 
   <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="importGuestsCSV(event)">
 
-  <script src="app.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  window.supabaseClient = window.supabase.createClient(
+    'https://frcalxptbqstfqrotnni.supabase.co',
+    'sb_publishable_sb_publishable_PUZJ3Y11FGO3kTLv5ifU0A_Sd1eIYXO'
+  );
+</script>
+<script src="app.js" defer></script>
 </body>
 </html>
