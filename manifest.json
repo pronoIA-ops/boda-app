@@ -1,0 +1,33 @@
+{
+  "id": "mi-boda-pwa-v1",
+  "scope": "./",
+  "lang": "es",
+  "short_name": "Mi Boda",
+  "name": "Mi Boda - Planificador Personal",
+  "description": "Organizador personal PWA para bodas: invitados, tareas, proveedores, presupuesto y mesas.",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#ffffff",
+  "theme_color": "#e11d48",
+  "display": "standalone",
+  "orientation": "portrait"
+}
