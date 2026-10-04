@@ -6,8 +6,88 @@
 // ==========================================
 // 1. CONSTANTES Y ESTADO INICIAL
 // ==========================================
-const STORAGE_KEY = 'wedding_planner_data_v2';
+const STORAGE_KEY = 'wedding_planner_data_v3';
 const CORRUPTED_KEY_PREFIX = 'wedding_planner_corrupted_';
+
+// 76 TAREAS EXTRAÍDAS DEL EXCEL "Plan maestro.xlsx"
+const INITIAL_TASKS = [
+  { "id": "task-1", "title": "Definir fecha exacta", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Completado" },
+  { "id": "task-2", "title": "Definir número aproximado de invitados", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "En proceso" },
+  { "id": "task-3", "title": "Establecer presupuesto máximo", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Completado" },
+  { "id": "task-4", "title": "Reservar lugar de ceremonia", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Completado" },
+  { "id": "task-5", "title": "Reservar lugar de recepción", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Completado" },
+  { "id": "task-6", "title": "Contratar fotógrafo", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Mary", "dueDate": "2026-09-24", "status": "Pendiente" },
+  { "id": "task-7", "title": "Contratar DJ / música", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Mary", "dueDate": "2026-09-24", "status": "Pendiente" },
+  { "id": "task-8", "title": "Definir catering / comida", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Mary", "dueDate": "2026-09-24", "status": "En proceso" },
+  { "id": "task-9", "title": "Comprar / encargar vestido", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Mary", "dueDate": "2026-09-24", "status": "Pendiente" },
+  { "id": "task-10", "title": "Definir traje del novio", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Tomas", "dueDate": "2026-09-24", "status": "Pendiente" },
+  { "id": "task-11", "title": "Elegir padrinos / damas / pajes", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Media", "responsible": "Mary / Tomas", "dueDate": "2026-09-30", "status": "Pendiente" },
+  { "id": "task-12", "title": "Definir si habrá ceremonia religiosa", "phase": "🔴 AHORA — SEPTIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Completado" },
+  { "id": "task-13", "title": "Diseñar y preparar invitaciones", "phase": "🟠 OCTUBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-14", "title": "Cerrar lista de invitados", "phase": "🟠 OCTUBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-15", "title": "Contratar florista", "phase": "🟠 OCTUBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "En proceso" },
+  { "id": "task-16", "title": "Definir decoración", "phase": "🟠 OCTUBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-17", "title": "Encargar pastel", "phase": "🟠 OCTUBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-18", "title": "Contratar maquillaje", "phase": "🟠 OCTUBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-19", "title": "Contratar peinado", "phase": "🟠 OCTUBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-20", "title": "Elegir ramo y boutonnieres", "phase": "🟠 OCTUBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-21", "title": "Elegir zapatos y accesorios", "phase": "🟠 OCTUBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-22", "title": "Comprar / encargar alianzas", "phase": "🟠 OCTUBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-23", "title": "Definir transporte", "phase": "🟠 OCTUBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-24", "title": "Definir menú y bebidas", "phase": "🟠 OCTUBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-25", "title": "Elegir canciones importantes", "phase": "🟠 OCTUBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-26", "title": "Definir programa de ceremonia", "phase": "🟠 OCTUBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-27", "title": "Enviar invitaciones", "phase": "🟡 NOVIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-28", "title": "Confirmar padrinos / damas", "phase": "🟡 NOVIEMBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-29", "title": "Confirmar vestidos y trajes", "phase": "🟡 NOVIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-30", "title": "Hacer prueba de vestido", "phase": "🟡 NOVIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-31", "title": "Hacer prueba de maquillaje", "phase": "🟡 NOVIEMBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-32", "title": "Hacer prueba de peinado", "phase": "🟡 NOVIEMBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-33", "title": "Confirmar decoración y flores", "phase": "🟡 NOVIEMBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-34", "title": "Confirmar menú y pastel", "phase": "🟡 NOVIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-35", "title": "Preparar recuerdos, si habrá", "phase": "🟡 NOVIEMBRE", "priority": "Baja", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-36", "title": "Preparar nombres / números de mesa", "phase": "🟡 NOVIEMBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-37", "title": "Definir seating chart preliminar", "phase": "🟡 NOVIEMBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-38", "title": "Preparar votos", "phase": "🟡 NOVIEMBRE", "priority": "Baja", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-39", "title": "Definir discursos", "phase": "🟡 NOVIEMBRE", "priority": "Baja", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-40", "title": "Preparar playlist", "phase": "🟡 NOVIEMBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-41", "title": "Cerrar Respuestas de invitados", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-42", "title": "Confirmar número final de invitados", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-43", "title": "Hacer distribución final de mesas", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-44", "title": "Confirmar todos los proveedores", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-45", "title": "Confirmar horarios con proveedores", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-46", "title": "Preparar pagos finales", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-47", "title": "Confirmar ceremonia con oficiante / pastor", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-48", "title": "Recoger vestido", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-49", "title": "Recoger traje", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-50", "title": "Recoger alianzas", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-51", "title": "Preparar kit de emergencia", "phase": "🟢 DICIEMBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-52", "title": "Preparar decoración", "phase": "🟢 DICIEMBRE", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-53", "title": "Preparar documentos legales", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-54", "title": "Crear cronograma del día", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-55", "title": "Asignar responsables del día", "phase": "🟢 DICIEMBRE", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-56", "title": "Confirmar todos los proveedores", "phase": "💒 SEMANA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-57", "title": "Confirmar invitados importantes", "phase": "💒 SEMANA DE LA BODA", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-58", "title": "Entregar cronograma a responsables", "phase": "💒 SEMANA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-59", "title": "Preparar pagos / propinas", "phase": "💒 SEMANA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-60", "title": "Preparar decoración y materiales", "phase": "💒 SEMANA DE LA BODA", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-61", "title": "Preparar kit de emergencia", "phase": "💒 SEMANA DE LA BODA", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-62", "title": "Preparar maleta de la pareja", "phase": "💒 SEMANA DE LA BODA", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-63", "title": "Confirmar transporte", "phase": "💒 SEMANA DE LA BODA", "priority": "Media", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-64", "title": "Ensayo de ceremonia", "phase": "💍 DÍA ANTERIOR", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-65", "title": "Entregar / asegurar anillos", "phase": "💍 DÍA ANTERIOR", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-66", "title": "Preparar vestido y traje", "phase": "💍 DÍA ANTERIOR", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-67", "title": "Revisar documentos", "phase": "💍 DÍA ANTERIOR", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-68", "title": "Descansar y evitar cambios grandes", "phase": "💍 DÍA ANTERIOR", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-69", "title": "Coordinación de proveedores", "phase": "❤️ DÍA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-70", "title": "Supervisar decoración", "phase": "❤️ DÍA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-71", "title": "Coordinar música", "phase": "❤️ DÍA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-72", "title": "Coordinar fotógrafo", "phase": "❤️ DÍA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-73", "title": "Coordinar catering", "phase": "❤️ DÍA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-74", "title": "Custodiar regalos / sobres", "phase": "❤️ DÍA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-75", "title": "Emergencias de la novia", "phase": "❤️ DÍA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" },
+  { "id": "task-76", "title": "Emergencias del novio", "phase": "❤️ DÍA DE LA BODA", "priority": "Alta", "responsible": "Sin asignar", "dueDate": "", "status": "Pendiente" }
+];
 
 const INITIAL_STATE = {
   weddingDetails: {
@@ -29,12 +109,7 @@ const INITIAL_STATE = {
     { id: "guest-1", name: "María García", group: "Familia Novia", status: "Confirmado", menu: "Adulto", allergies: "Sin gluten", plusOneAllowed: true, plusOneName: "Juan Pérez", table: "Mesa 1" },
     { id: "guest-2", name: "Pedro Martínez", group: "Amigos", status: "Pendiente", menu: "Adulto", allergies: "", plusOneAllowed: false, plusOneName: "", table: "Sin asignar" }
   ],
-  tasks: [
-    { id: "task-1", title: "Definir presupuesto inicial", phase: "10-12 meses antes", status: "completada" },
-    { id: "task-2", title: "Reservar el lugar del banquete", phase: "10-12 meses antes", status: "completada" },
-    { id: "task-3", title: "Enviar invitaciones", phase: "3-5 meses antes", status: "pendiente" },
-    { id: "task-4", title: "Prueba de menú", phase: "3-5 meses antes", status: "pendiente" }
-  ],
+  tasks: INITIAL_TASKS,
   expenses: [
     { id: "exp-1", concept: "Alquiler Finca", category: "Lugar", realCost: 4500, estimatedCost: 4500, status: "Pagado" },
     { id: "exp-2", concept: "Señal Catering", category: "Catering", realCost: 2500, estimatedCost: 6500, status: "Parcial" }
@@ -75,6 +150,24 @@ let activeModule = 'resumen';
 let guestSearchQuery = "";
 let guestStatusFilter = "todos";
 let deferredPrompt = null;
+
+// Filtros globales para el módulo de Tareas
+let taskSearchQuery = "";
+let taskPhaseFilter = "todas";
+let taskStatusFilter = "todos";
+let taskPriorityFilter = "todas";
+let taskResponsibleFilter = "todos";
+
+// Fases de las Tareas en Orden
+const TASK_PHASES = [
+  "🔴 AHORA — SEPTIEMBRE",
+  "🟠 OCTUBRE",
+  "🟡 NOVIEMBRE",
+  "🟢 DICIEMBRE",
+  "💒 SEMANA DE LA BODA",
+  "💍 DÍA ANTERIOR",
+  "❤️ DÍA DE LA BODA"
+];
 
 // ==========================================
 // 2. GESTIÓN DE SEGURIDAD Y PERSISTENCIA
@@ -137,13 +230,12 @@ function loadData() {
   try {
     const parsed = JSON.parse(rawData);
     
-    // Validación de tipos y estructura
     const validated = {
       weddingDetails: (parsed.weddingDetails && typeof parsed.weddingDetails === 'object') ? { ...defaultData.weddingDetails, ...parsed.weddingDetails } : defaultData.weddingDetails,
       spaces: (parsed.spaces && typeof parsed.spaces === 'object') ? { ...defaultData.spaces, ...parsed.spaces } : defaultData.spaces,
       suppliers: Array.isArray(parsed.suppliers) ? parsed.suppliers : defaultData.suppliers,
       guests: Array.isArray(parsed.guests) ? parsed.guests : defaultData.guests,
-      tasks: Array.isArray(parsed.tasks) ? parsed.tasks : defaultData.tasks,
+      tasks: Array.isArray(parsed.tasks) && parsed.tasks.length > 0 ? parsed.tasks : defaultData.tasks,
       expenses: Array.isArray(parsed.expenses) ? parsed.expenses : defaultData.expenses,
       itinerary: Array.isArray(parsed.itinerary) ? parsed.itinerary : defaultData.itinerary,
       tables: Array.isArray(parsed.tables) ? parsed.tables : defaultData.tables,
@@ -153,7 +245,6 @@ function loadData() {
     return validated;
   } catch (e) {
     console.error('Datos corruptos en localStorage:', e);
-    // Preservar copia dañada
     safeSetStorage(CORRUPTED_KEY_PREFIX + Date.now(), rawData);
     
     setTimeout(() => {
@@ -464,7 +555,7 @@ function renderResumenModule() {
   const declinedGuests = store.guests.filter(g => g.status === 'Rechazado').length;
 
   const totalTasks = store.tasks.length;
-  const completedTasks = store.tasks.filter(t => t.status === 'completada').length;
+  const completedTasks = store.tasks.filter(t => t.status === 'Completado' || t.status === 'completada').length;
   const taskProgress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   const totalSpent = store.expenses.reduce((acc, curr) => acc + Number(curr.realCost || 0), 0);
@@ -472,7 +563,6 @@ function renderResumenModule() {
 
   return `
     <div class="space-y-6 animate-fade-in">
-      <!-- Card Banner Principal -->
       <div class="bg-gradient-to-r from-wedding-600 to-rose-700 rounded-3xl p-6 text-white shadow-lg">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -493,7 +583,6 @@ function renderResumenModule() {
         </div>
       </div>
 
-      <!-- Grid Estadísticas Rápidas -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex items-center justify-between">
           <div>
@@ -506,9 +595,9 @@ function renderResumenModule() {
 
         <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex items-center justify-between">
           <div>
-            <p class="text-xs font-medium text-slate-500 uppercase">Progreso Tareas</p>
+            <p class="text-xs font-medium text-slate-500 uppercase">Progreso Plan Maestro</p>
             <h3 class="text-2xl font-bold text-slate-900 mt-1">${taskProgress}%</h3>
-            <p class="text-xs text-slate-500 mt-1">${completedTasks} de ${totalTasks} completadas</p>
+            <p class="text-xs text-slate-500 mt-1">${completedTasks} de ${totalTasks} tareas completadas</p>
           </div>
           <div class="p-3 bg-indigo-50 text-indigo-600 rounded-2xl"><i data-lucide="check-square" class="w-6 h-6"></i></div>
         </div>
@@ -564,7 +653,6 @@ function renderInvitadosModule() {
         </div>
       </div>
 
-      <!-- Buscador y Filtros -->
       <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-3 justify-between">
         <div class="relative flex-1">
           <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -579,7 +667,6 @@ function renderInvitadosModule() {
         </div>
       </div>
 
-      <!-- Tabla de Invitados -->
       <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm">
@@ -609,7 +696,8 @@ function renderInvitadosModule() {
                     </span>
                   </td>
                   <td class="px-6 py-4 text-slate-600">
-                    <div>${escapeHtml(g.menu || 'Adulto')}</div>${g.allergies ? `<div class="text-xs text-rose-600 font-medium">⚠️ ${escapeHtml(g.allergies)}</div>` : ''}
+                    <div>${escapeHtml(g.menu || 'Adulto')}</div>
+                    ${g.allergies ? `<div class="text-xs text-rose-600 font-medium">⚠️ ${escapeHtml(g.allergies)}</div>` : ''}
                   </td>
                   <td class="px-6 py-4 text-slate-600">${escapeHtml(g.table || 'Sin asignar')}</td>
                   <td class="px-6 py-4 text-right">
@@ -638,19 +726,12 @@ function setGuestStatusFilter(st) {
   renderModuleContent();
 }
 
-function openAddGuestModal() {
-  openGuestFormModal(null);
-}
-
-function openEditGuestModal(id) {
-  const guest = store.guests.find(g => g.id === id);
-  if (guest) openGuestFormModal(guest);
-}
+function openAddGuestModal() { openGuestFormModal(null); }
+function openEditGuestModal(id) { const guest = store.guests.find(g => g.id === id); if (guest) openGuestFormModal(guest); }
 
 function openGuestFormModal(guest) {
   const isEdit = !!guest;
   const g = guest || { name: '', group: 'Familia Novia', status: 'Pendiente', menu: 'Adulto', allergies: '', plusOneAllowed: false, plusOneName: '', table: 'Sin asignar' };
-  
   const tablesOptions = store.tables.map(t => `<option value="${escapeHtml(t.name)}" ${g.table === t.name ? 'selected' : ''}>${escapeHtml(t.name)}</option>`).join('');
 
   const content = `
@@ -1065,75 +1146,279 @@ function copyRSVPMessage(msg) {
   });
 }
 
-// --- MÓDULO TAREAS ---
+// --- MÓDULO TAREAS (PLAN MAESTRO EXCEL COMPLETO) ---
 function renderTareasModule() {
-  const tasks = store.tasks;
-  const phases = ["10-12 meses antes", "6-9 meses antes", "3-5 meses antes", "Último mes", "Día B"];
+  const tasks = store.tasks || [];
+  
+  // Cálculo de Métricas
+  const total = tasks.length;
+  const completed = tasks.filter(t => t.status === 'Completado' || t.status === 'completada').length;
+  const inProgress = tasks.filter(t => t.status === 'En proceso').length;
+  const pending = tasks.filter(t => t.status === 'Pendiente' || !t.status).length;
+  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+  // Filtrado de Tareas
+  const filteredTasks = tasks.filter(t => {
+    const matchesSearch = t.title.toLowerCase().includes(taskSearchQuery.toLowerCase());
+    const matchesPhase = taskPhaseFilter === 'todas' || t.phase === taskPhaseFilter;
+    const matchesStatus = taskStatusFilter === 'todos' || 
+                          (taskStatusFilter === 'Completado' && (t.status === 'Completado' || t.status === 'completada')) ||
+                          (taskStatusFilter === 'En proceso' && t.status === 'En proceso') ||
+                          (taskStatusFilter === 'Pendiente' && (t.status === 'Pendiente' || !t.status));
+    const matchesPriority = taskPriorityFilter === 'todas' || t.priority === taskPriorityFilter;
+    const matchesResp = taskResponsibleFilter === 'todos' || t.responsible === taskResponsibleFilter;
+    return matchesSearch && matchesPhase && matchesStatus && matchesPriority && matchesResp;
+  });
 
   return `
     <div class="space-y-6 animate-fade-in">
-      <div class="flex justify-between items-center">
+      <!-- Encabezado -->
+      <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          <h2 class="text-2xl font-bold text-slate-900">Lista de Tareas</h2>
-          <p class="text-slate-500 text-sm">Organizadas cronológicamente por fases</p>
+          <h2 class="text-2xl font-bold text-slate-900">Plan Maestro de Tareas (${total})</h2>
+          <p class="text-slate-500 text-sm">Cronograma organizado por etapas, responsables y prioridad</p>
         </div>
-        <button onclick="openAddTaskModal()" class="bg-wedding-600 text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-wedding-700 flex items-center gap-1.5">
+        <button onclick="openAddTaskModal()" class="bg-wedding-600 text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-wedding-700 flex items-center gap-1.5 self-start sm:self-auto shadow-sm">
           <i data-lucide="plus" class="w-4 h-4"></i> Añadir Tarea
         </button>
       </div>
 
+      <!-- Barra de Progreso y Métricas Globales -->
+      <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 space-y-4">
+        <div class="flex justify-between items-center text-sm font-semibold text-slate-700">
+          <span class="flex items-center gap-2"><i data-lucide="target" class="w-4 h-4 text-wedding-600"></i> Progreso General del Plan</span>
+          <span class="text-wedding-600 font-bold">${percent}% Completado</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div class="bg-gradient-to-r from-wedding-500 to-emerald-500 h-3 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center pt-2 border-t border-slate-50">
+          <div class="bg-emerald-50/60 p-2.5 rounded-2xl"><span class="block text-lg font-bold text-emerald-700">${completed}</span><span class="text-[11px] font-medium text-emerald-600">Completadas</span></div>
+          <div class="bg-amber-50/60 p-2.5 rounded-2xl"><span class="block text-lg font-bold text-amber-700">${inProgress}</span><span class="text-[11px] font-medium text-amber-600">En Proceso</span></div>
+          <div class="bg-slate-100/70 p-2.5 rounded-2xl"><span class="block text-lg font-bold text-slate-700">${pending}</span><span class="text-[11px] font-medium text-slate-500">Pendientes</span></div>
+        </div>
+      </div>
+
+      <!-- Barra de Búsqueda y Filtros Combinados -->
+      <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 space-y-3">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" value="${escapeHtml(taskSearchQuery)}" oninput="handleTaskSearch(this.value)" placeholder="Buscar tarea..." class="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-2xl focus:outline-none focus:border-wedding-500">
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Etapa / Mes</label>
+            <select onchange="handleTaskPhaseFilter(this.value)" class="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-wedding-500 bg-slate-50">
+              <option value="todas" ${taskPhaseFilter === 'todas' ? 'selected' : ''}>Todas las Etapas</option>
+              ${TASK_PHASES.map(p => `<option value="${escapeHtml(p)}" ${taskPhaseFilter === p ? 'selected' : ''}>${escapeHtml(p)}</option>`).join('')}
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Estado</label>
+            <select onchange="handleTaskStatusFilter(this.value)" class="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-wedding-500 bg-slate-50">
+              <option value="todos" ${taskStatusFilter === 'todos' ? 'selected' : ''}>Todos los Estados</option>
+              <option value="Pendiente" ${taskStatusFilter === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
+              <option value="En proceso" ${taskStatusFilter === 'En proceso' ? 'selected' : ''}>En proceso</option>
+              <option value="Completado" ${taskStatusFilter === 'Completado' ? 'selected' : ''}>Completado</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Prioridad</label>
+            <select onchange="handleTaskPriorityFilter(this.value)" class="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-wedding-500 bg-slate-50">
+              <option value="todas" ${taskPriorityFilter === 'todas' ? 'selected' : ''}>Todas las Prioridades</option>
+              <option value="Alta" ${taskPriorityFilter === 'Alta' ? 'selected' : ''}>Alta</option>
+              <option value="Media" ${taskPriorityFilter === 'Media' ? 'selected' : ''}>Media</option>
+              <option value="Baja" ${taskPriorityFilter === 'Baja' ? 'selected' : ''}>Baja</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Responsable</label>
+            <select onchange="handleTaskResponsibleFilter(this.value)" class="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-wedding-500 bg-slate-50">
+              <option value="todos" ${taskResponsibleFilter === 'todos' ? 'selected' : ''}>Todos</option>
+              <option value="Mary" ${taskResponsibleFilter === 'Mary' ? 'selected' : ''}>Mary</option>
+              <option value="Tomas" ${taskResponsibleFilter === 'Tomas' ? 'selected' : ''}>Tomas</option>
+              <option value="Mary / Tomas" ${taskResponsibleFilter === 'Mary / Tomas' ? 'selected' : ''}>Mary / Tomas</option>
+              <option value="Sin asignar" ${taskResponsibleFilter === 'Sin asignar' ? 'selected' : ''}>Sin asignar</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Listado de Tareas Agrupado por Etapa -->
       <div class="space-y-6">
-        ${phases.map(phase => {
-          const phaseTasks = tasks.filter(t => t.phase === phase);
+        ${TASK_PHASES.map(phase => {
+          const phaseTasks = filteredTasks.filter(t => t.phase === phase);
           if (phaseTasks.length === 0) return '';
+          
+          const phaseCompleted = phaseTasks.filter(t => t.status === 'Completado' || t.status === 'completada').length;
+
           return `
-            <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
-              <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center gap-2">
-                <i data-lucide="clock" class="w-4 h-4 text-wedding-600"></i> ${escapeHtml(phase)}
-              </h3>
+            <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 space-y-3">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                  <span>${escapeHtml(phase)}</span>
+                </h3>
+                <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full">
+                  ${phaseCompleted} / ${phaseTasks.length}
+                </span>
+              </div>
+
               <div class="space-y-2">
-                ${phaseTasks.map(t => `
-                  <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 border border-slate-100">
-                    <label class="flex items-center gap-3 cursor-pointer flex-1">
-                      <input type="checkbox" ${t.status === 'completada' ? 'checked' : ''} onchange="toggleTask('${escapeHtml(t.id)}')" class="w-4 h-4">
-                      <span class="${t.status === 'completada' ? 'line-through text-slate-400' : 'text-slate-800 font-medium'} text-sm">${escapeHtml(t.title)}</span>
-                    </label>
-                    <button onclick="deleteTask('${escapeHtml(t.id)}')" aria-label="Eliminar tarea" class="text-slate-400 hover:text-rose-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                  </div>
-                `).join('')}
+                ${phaseTasks.map(t => {
+                  const isDone = t.status === 'Completado' || t.status === 'completada';
+                  const isInProgress = t.status === 'En proceso';
+
+                  const priorityBadge = t.priority === 'Alta' 
+                    ? '<span class="px-2 py-0.5 bg-rose-100 text-rose-700 text-[10px] font-bold rounded-lg">Alta</span>'
+                    : t.priority === 'Media'
+                    ? '<span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-lg">Media</span>'
+                    : '<span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold rounded-lg">Baja</span>';
+
+                  const respBadge = (t.responsible && t.responsible !== 'Sin asignar') 
+                    ? `<span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[10px] font-semibold rounded-lg">👤 ${escapeHtml(t.responsible)}</span>` 
+                    : '';
+
+                  const dueBadge = t.dueDate 
+                    ? `<span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-medium rounded-lg">📅 ${escapeHtml(t.dueDate)}</span>` 
+                    : '';
+
+                  return `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-2xl hover:bg-slate-50/80 border border-slate-100 transition-all gap-3">
+                      <div class="flex items-start gap-3 flex-1">
+                        <!-- Botón de Cambio Rápido de Estado -->
+                        <button onclick="cycleTaskStatus('${escapeHtml(t.id)}')" class="mt-0.5 flex-shrink-0 focus:outline-none" title="Cambiar estado">
+                          ${isDone 
+                            ? '<div class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center"><i data-lucide="check" class="w-3.5 h-3.5"></i></div>' 
+                            : isInProgress
+                            ? '<div class="w-5 h-5 rounded-full border-2 border-amber-500 bg-amber-50 text-amber-600 flex items-center justify-center text-[10px] font-bold">~</div>'
+                            : '<div class="w-5 h-5 rounded-full border-2 border-slate-300 hover:border-wedding-500"></div>'
+                          }
+                        </button>
+
+                        <div class="space-y-1">
+                          <p class="text-sm font-semibold ${isDone ? 'line-through text-slate-400' : 'text-slate-800'}">
+                            ${escapeHtml(t.title)}
+                          </p>
+                          <div class="flex flex-wrap items-center gap-1.5">
+                            ${priorityBadge}
+                            ${respBadge}
+                            ${dueBadge}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="flex items-center justify-between sm:justify-end gap-2 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-50">
+                        <select onchange="updateTaskStatus('${escapeHtml(t.id)}', this.value)" class="text-xs px-2.5 py-1 border rounded-xl bg-white font-medium text-slate-700 focus:outline-none">
+                          <option value="Pendiente" ${t.status === 'Pendiente' || !t.status ? 'selected' : ''}>Pendiente</option>
+                          <option value="En proceso" ${t.status === 'En proceso' ? 'selected' : ''}>En proceso</option>
+                          <option value="Completado" ${isDone ? 'selected' : ''}>Completado</option>
+                        </select>
+                        <div class="flex items-center gap-1">
+                          <button onclick="openEditTaskModal('${escapeHtml(t.id)}')" aria-label="Editar tarea" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                          <button onclick="deleteTask('${escapeHtml(t.id)}')" aria-label="Eliminar tarea" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
               </div>
             </div>
           `;
         }).join('')}
+
+        ${filteredTasks.length === 0 ? `
+          <div class="bg-white p-8 rounded-3xl text-center text-slate-400 border border-slate-100">
+            <i data-lucide="check-circle-2" class="w-10 h-10 mx-auto text-slate-300 mb-2"></i>
+            <p class="font-medium text-slate-600">No se encontraron tareas con los filtros seleccionados.</p>
+          </div>
+        ` : ''}
       </div>
     </div>
   `;
 }
 
-function toggleTask(id) {
+function handleTaskSearch(val) { taskSearchQuery = val; renderModuleContent(); }
+function handleTaskPhaseFilter(val) { taskPhaseFilter = val; renderModuleContent(); }
+function handleTaskStatusFilter(val) { taskStatusFilter = val; renderModuleContent(); }
+function handleTaskPriorityFilter(val) { taskPriorityFilter = val; renderModuleContent(); }
+function handleTaskResponsibleFilter(val) { taskResponsibleFilter = val; renderModuleContent(); }
+
+function cycleTaskStatus(id) {
+  const task = store.tasks.find(t => t.id === id);
+  if (!task) return;
+  if (task.status === 'Completado' || task.status === 'completada') {
+    task.status = 'Pendiente';
+  } else if (task.status === 'Pendiente' || !task.status) {
+    task.status = 'En proceso';
+  } else {
+    task.status = 'Completado';
+  }
+  saveData();
+}
+
+function updateTaskStatus(id, newStatus) {
   const task = store.tasks.find(t => t.id === id);
   if (task) {
-    task.status = task.status === 'completada' ? 'pendiente' : 'completada';
+    task.status = newStatus;
     saveData();
   }
 }
 
-function openAddTaskModal() {
+function openAddTaskModal() { openTaskFormModal(null); }
+function openEditTaskModal(id) { const task = store.tasks.find(t => t.id === id); if (task) openTaskFormModal(task); }
+
+function openTaskFormModal(task) {
+  const isEdit = !!task;
+  const t = task || { title: '', phase: TASK_PHASES[0], priority: 'Alta', responsible: 'Sin asignar', dueDate: '', status: 'Pendiente' };
+
   const content = `
-    <form onsubmit="saveTaskForm(event)" class="space-y-4">
+    <form onsubmit="saveTaskForm(event, '${isEdit ? escapeHtml(t.id) : ''}')" class="space-y-4">
       <div>
         <label class="block text-xs font-semibold text-slate-700 mb-1">Título de la Tarea</label>
-        <input type="text" id="tk-title" required class="w-full px-3 py-2 text-sm border rounded-xl">
+        <input type="text" id="tk-title" required value="${escapeHtml(t.title)}" class="w-full px-3 py-2 text-sm border rounded-xl">
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-700 mb-1">Fase Cronológica</label>
+        <label class="block text-xs font-semibold text-slate-700 mb-1">Etapa / Mes</label>
         <select id="tk-phase" class="w-full px-3 py-2 text-sm border rounded-xl">
-          <option>10-12 meses antes</option>
-          <option>6-9 meses antes</option>
-          <option>3-5 meses antes</option>
-          <option>Último mes</option>
-          <option>Día B</option>
+          ${TASK_PHASES.map(p => `<option value="${escapeHtml(p)}" ${t.phase === p ? 'selected' : ''}>${escapeHtml(p)}</option>`).join('')}
         </select>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Prioridad</label>
+          <select id="tk-priority" class="w-full px-3 py-2 text-sm border rounded-xl">
+            <option ${t.priority === 'Alta' ? 'selected' : ''}>Alta</option>
+            <option ${t.priority === 'Media' ? 'selected' : ''}>Media</option>
+            <option ${t.priority === 'Baja' ? 'selected' : ''}>Baja</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Responsable</label>
+          <select id="tk-resp" class="w-full px-3 py-2 text-sm border rounded-xl">
+            <option ${t.responsible === 'Sin asignar' ? 'selected' : ''}>Sin asignar</option>
+            <option ${t.responsible === 'Mary' ? 'selected' : ''}>Mary</option>
+            <option ${t.responsible === 'Tomas' ? 'selected' : ''}>Tomas</option>
+            <option ${t.responsible === 'Mary / Tomas' ? 'selected' : ''}>Mary / Tomas</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Estado</label>
+          <select id="tk-status" class="w-full px-3 py-2 text-sm border rounded-xl">
+            <option ${t.status === 'Pendiente' || !t.status ? 'selected' : ''}>Pendiente</option>
+            <option ${t.status === 'En proceso' ? 'selected' : ''}>En proceso</option>
+            <option ${t.status === 'Completado' || t.status === 'completada' ? 'selected' : ''}>Completado</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Fecha Límite</label>
+          <input type="date" id="tk-duedate" value="${escapeHtml(t.dueDate)}" class="w-full px-3 py-2 text-sm border rounded-xl">
+        </div>
       </div>
       <div class="flex justify-end gap-2 pt-4 border-t">
         <button type="button" onclick="closeModal()" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Cancelar</button>
@@ -1141,24 +1426,40 @@ function openAddTaskModal() {
       </div>
     </form>
   `;
-  openModal('Añadir Tarea', content);
+  openModal(isEdit ? 'Editar Tarea' : 'Añadir Tarea', content);
 }
 
-function saveTaskForm(event) {
+function saveTaskForm(event, taskId) {
   event.preventDefault();
   const title = document.getElementById('tk-title').value.trim();
   const phase = document.getElementById('tk-phase').value;
+  const priority = document.getElementById('tk-priority').value;
+  const responsible = document.getElementById('tk-resp').value;
+  const status = document.getElementById('tk-status').value;
+  const dueDate = document.getElementById('tk-duedate').value;
+
   if (!title) return;
 
-  store.tasks.push({ id: generateUUID(), title, phase, status: 'pendiente' });
+  if (taskId) {
+    const idx = store.tasks.findIndex(t => t.id === taskId);
+    if (idx !== -1) {
+      store.tasks[idx] = { ...store.tasks[idx], title, phase, priority, responsible, status, dueDate };
+    }
+  } else {
+    store.tasks.push({ id: generateUUID(), title, phase, priority, responsible, status, dueDate });
+  }
+
   saveData();
   closeModal();
-  showToast('Tarea creada', 'success');
+  showToast(taskId ? 'Tarea actualizada' : 'Tarea añadida', 'success');
 }
 
 function deleteTask(id) {
-  store.tasks = store.tasks.filter(t => t.id !== id);
-  saveData();
+  if (confirm('¿Deseas eliminar esta tarea del Plan Maestro?')) {
+    store.tasks = store.tasks.filter(t => t.id !== id);
+    saveData();
+    showToast('Tarea eliminada', 'info');
+  }
 }
 
 // --- MÓDULO PRESUPUESTO ---
@@ -1362,7 +1663,7 @@ function renderMesasModule() {
                 <div class="flex justify-between items-start mb-2">
                   <h3 class="font-bold text-slate-900 text-lg">${escapeHtml(tbl.name)}</h3>
                   <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${isOverCap ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-600'}">
-                    ${assignedGuests.length} /${tbl.capacity} pax
+                    ${assignedGuests.length} / ${tbl.capacity} pax
                   </span>
                 </div>
                 ${isOverCap ? '<p class="text-xs text-rose-600 font-semibold mb-2">⚠️ Capacidad superada</p>' : ''}
@@ -1523,7 +1824,6 @@ function renderConfiguracionModule() {
     <div class="space-y-6 animate-fade-in max-w-3xl mx-auto">
       <h2 class="text-2xl font-bold text-slate-900">Configuración y Copias de Seguridad</h2>
 
-      <!-- Formulario Datos Principales -->
       <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-4">
         <h3 class="font-bold text-lg text-slate-900 border-b pb-2">Datos Principales de la Boda</h3>
         <form onsubmit="saveWeddingDetailsForm(event)" class="space-y-4">
@@ -1555,7 +1855,6 @@ function renderConfiguracionModule() {
         </form>
       </div>
 
-      <!-- Copias de Seguridad -->
       <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-4">
         <h3 class="font-bold text-lg text-slate-900 border-b pb-2">Copias de Seguridad (JSON)</h3>
         <p class="text-xs text-slate-500">Exporta todos tus datos a un archivo local o restaura una copia guardada previamente.</p>
@@ -1572,10 +1871,9 @@ function renderConfiguracionModule() {
         </div>
       </div>
 
-      <!-- Zona de Peligro -->
       <div class="bg-rose-50 border border-rose-200 p-6 rounded-3xl space-y-3">
         <h3 class="font-bold text-base text-rose-900">Restablecer la Aplicación</h3>
-        <p class="text-xs text-rose-700">Borra todos los datos actuales y restaura los valores por defecto. Esta acción no se puede deshacer.</p>
+        <p class="text-xs text-rose-700">Borra todos los datos actuales y restaura los valores por defecto del Plan Maestro. Esta acción no se puede deshacer.</p>
         <button onclick="confirmResetApp()" class="bg-rose-600 text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-rose-700">
           Restablecer Datos de Fábrica
         </button>
@@ -1629,7 +1927,7 @@ function importBackupJSON(event) {
 }
 
 function confirmResetApp() {
-  if (confirm('¿ESTÁS SEGURO? Se borrarán todos los cambios e invitados introducidos.')) {
+  if (confirm('¿ESTÁS SEGURO? Se borrarán todos los cambios e invitados introducidos y se cargará el Plan Maestro original.')) {
     store = cloneInitialState();
     saveData();
     showToast('Datos restablecidos correctamente', 'info');
