@@ -1,4 +1,4 @@
-const CACHE_NAME = 'boda-app-cache-v4';
+const CACHE_NAME = 'boda-app-cache-v6';
 
 const LOCAL_ASSETS = [
   './',
@@ -22,7 +22,6 @@ const EXTERNAL_CDN_PREFIXES = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
-      // Precarga tolerante a fallos
       await Promise.allSettled(
         LOCAL_ASSETS.map(url => cache.add(url).catch(err => console.warn(`Fallback precache falló para ${url}:`, err)))
       );
@@ -51,7 +50,6 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
 
-  // Network-First para archivos HTML, JS y CSS locales
   if (event.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname.endsWith('.js') || url.pathname.endsWith('.css')) {
     event.respondWith(
       fetch(event.request)
@@ -67,7 +65,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Stale-While-Revalidate para recursos estáticos y CDNs
   const isExternalCDN = EXTERNAL_CDN_PREFIXES.some(prefix => event.request.url.startsWith(prefix));
   
   if (isExternalCDN || LOCAL_ASSETS.includes(url.pathname)) {
