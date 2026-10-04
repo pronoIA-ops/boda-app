@@ -260,7 +260,75 @@ function saveData() {
   if (!success && !isLocalStorageAvailable) {
     showToast('Modo sin almacenamiento: Los cambios se mantendrán solo durante la sesión actual.', 'info');
   }
+  scheduleCloudSave();
   updateUI();
+}
+
+// ==========================================
+// SINCRONIZACIÓN CON SUPABASE
+// ==========================================
+let cloudReady = false;
+let cloudTimer = null;
+
+function normalizeStore(parsed) {
+  const d = cloneInitialState();
+  return {
+    weddingDetails: (parsed.weddingDetails && typeof parsed.weddingDetails === 'object') ? { ...d.weddingDetails, ...parsed.weddingDetails } : d.weddingDetails,
+    spaces: (parsed.spaces && typeof parsed.spaces === 'object') ? { ...d.spaces, ...parsed.spaces } : d.spaces,
+    suppliers: Array.isArray(parsed.suppliers) ? parsed.suppliers : d.suppliers,
+    guests: Array.isArray(parsed.guests) ? parsed.guests : d.guests,
+    tasks: Array.isArray(parsed.tasks) && parsed.tasks.length > 0 ? parsed.tasks : d.tasks,
+    expenses: Array.isArray(parsed.expenses) ? parsed.expenses : d.expenses,
+    itinerary: Array.isArray(parsed.itinerary) ? parsed.itinerary : d.itinerary,
+    tables: Array.isArray(parsed.tables) ? parsed.tables : d.tables,
+    notes: Array.isArray(parsed.notes) ? parsed.notes : d.notes
+  };
+}
+
+async function loadFromCloud() {
+  try {
+    if (!window.supabaseClient) throw new Error('Supabase no cargó');
+    const { data, error } = await supabaseClient
+      .from('wedding_data')
+      .select('content')
+      .eq('id', 1)
+      .single();
+    if (error) throw error;
+
+    if (data && data.content && data.content.weddingDetails) {
+      // La nube ya tiene datos: son los que mandan
+      store = normalizeStore(data.content);
+      safeSetStorage(STORAGE_KEY, JSON.stringify(store));
+      updateUI();
+    } else {
+      // La nube está vacía: subimos los datos de este dispositivo
+      await saveToCloud();
+    }
+    cloudReady = true;
+    showToast('Sincronizado con la nube', 'success');
+  } catch (e) {
+    console.error(e);
+    showToast('No se pudo conectar con la nube. Los cambios no se compartirán.', 'error');
+  }
+}
+
+function scheduleCloudSave() {
+  if (!cloudReady) return;
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(saveToCloud, 800);
+}
+
+async function saveToCloud() {
+  try {
+    const { error } = await supabaseClient
+      .from('wedding_data')
+      .update({ content: store })
+      .eq('id', 1);
+    if (error) throw error;
+  } catch (e) {
+    console.error(e);
+    showToast('No se pudo guardar en la nube', 'error');
+  }
 }
 
 // ==========================================
@@ -314,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     switchModule('resumen');
     setupPWAInstall();
     setupKeyboardListeners();
+    loadFromCloud();
   } catch (err) {
     showGlobalError('Falló el arranque de la aplicación: ' + err.message);
   }
