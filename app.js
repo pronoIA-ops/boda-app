@@ -609,7 +609,7 @@ function renderInvitadosModule() {
                     </span>
                   </td>
                   <td class="px-6 py-4 text-slate-600">
-                    <div>${escapeHtml(g.menu \vert{}\vert{} 'Adulto')}</div>${g.allergies ? `<div class="text-xs text-rose-600 font-medium">⚠️ ${escapeHtml(g.allergies)}</div>` : ''}
+                    <div>${escapeHtml(g.menu || 'Adulto')}</div>${g.allergies ? `<div class="text-xs text-rose-600 font-medium">⚠️ ${escapeHtml(g.allergies)}</div>` : ''}
                   </td>
                   <td class="px-6 py-4 text-slate-600">${escapeHtml(g.table || 'Sin asignar')}</td>
                   <td class="px-6 py-4 text-right">
